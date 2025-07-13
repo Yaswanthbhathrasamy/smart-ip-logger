@@ -4,37 +4,61 @@
   <title>Smart IP Logger</title>
   <style>
     body {
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #fff;
       font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #2193b0, #6dd5ed);
+      color: white;
       text-align: center;
-      padding: 40px;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    input, button {
+    form {
+      margin-top: 100px;
+    }
+    input[type="text"] {
       padding: 10px;
-      font-size: 16px;
-      margin-top: 10px;
+      width: 300px;
+      border-radius: 5px;
+      border: none;
+    }
+    input[type="submit"] {
+      padding: 10px 20px;
+      background: #fff;
+      color: #2193b0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .result {
+      margin-top: 30px;
     }
     footer {
-      margin-top: 30px;
+      margin-top: auto;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.2);
       font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1>Smart IP Logger</h1>
-  <p>Enter a URL to generate a trackable short link.</p>
+  <h1>🔗 Smart IP Logger</h1>
   <form method="POST">
-    <input type="url" name="url" placeholder="https://example.com" required>
-    <br>
-    <button type="submit">Generate</button>
+    <input type="text" name="url" placeholder="Enter a URL to shorten and track" required>
+    <input type="submit" value="Generate Link">
   </form>
+
   {% if short_url %}
-    <p>Trackable URL:</p>
-    <input type="text" value="{{ short_url }}" readonly onclick="this.select()">
+  <div class="result">
+    <h2>🚀 Your Tracking URL:</h2>
+    <p><a href="{{ short_url }}" style="color: #fff;">{{ short_url }}</a></p>
+  </div>
   {% endif %}
+
   <footer>
-    Yaswanth – yaswanthvisa@gmail.com
+    Made by <strong>Yaswanth</strong> | 📧 <a href="mailto:yaswanthvisa@gmail.com" style="color: white;">yaswanthvisa@gmail.com</a>
   </footer>
 </body>
 </html>
