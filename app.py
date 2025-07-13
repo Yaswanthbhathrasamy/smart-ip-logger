@@ -62,7 +62,7 @@ Coordinates: {ip_data.get('lat', 'N/A')} / {ip_data.get('lon', 'N/A')}
 def index():
     if request.method == 'POST':
         url = request.form.get("url")
-        recipient_email = request.form.get("recipient_email")
+        recipient_email = request.form.get("to_email")
 
         if not url.startswith("http"):
             url = "http://" + url
