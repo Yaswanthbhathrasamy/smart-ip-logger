@@ -5,62 +5,120 @@
     <title>Smart IP Logger</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            padding: 40px;
-            background-color: #f0f0f0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            margin: auto;
+            padding: 2rem;
+            max-width: 500px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
             text-align: center;
+            margin-bottom: 1.5rem;
         }
 
         form {
-            background: white;
-            display: inline-block;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input[type="text"],
+        input[type="email"] {
+            padding: 0.8rem;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        button {
+            padding: 0.8rem;
+            background-color: #ff6f61;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #ff3b2e;
+        }
+
+        .short-url {
+            text-align: center;
+            margin-top: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
             border-radius: 10px;
         }
 
-        input[type="text"], input[type="email"] {
-            padding: 10px;
-            width: 300px;
-            margin: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="submit"] {
-            padding: 10px 20px;
-            margin-top: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .result {
-            margin-top: 20px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        a {
-            color: #007bff;
+        .short-url a {
+            color: #00ffd0;
             text-decoration: none;
+        }
+
+        .short-url a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(0, 0, 0, 0.15);
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>Smart IP Logger</h2>
-    <form method="POST">
-        <input type="text" name="url" placeholder="Enter target URL" required><br>
-        <input type="email" name="recipient_email" placeholder="Enter your email to receive logs" required><br>
-        <input type="submit" value="Generate Link">
-    </form>
+    <div class="container">
+        <h2>Smart IP Logger</h2>
+        <form method="POST">
+            <label for="url">Target URL:</label>
+            <input type="text" name="url" id="url" placeholder="https://example.com" required>
 
-    {% if short_url %}
-    <div class="result">
-        <p><strong>Tracking Link:</strong></p>
-        <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+            <label for="to_email">Your Email (for alerts):</label>
+            <input type="email" name="to_email" id="to_email" placeholder="you@example.com" required>
+
+            <button type="submit">Generate Tracking Link</button>
+        </form>
+
+        {% if short_url %}
+        <div class="short-url">
+            <h3>Your Tracking Link:</h3>
+            <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
+
+    <footer>
+        &copy; {{ 2025 }} Smart IP Logger &mdash; Built with ❤️ by Yaswanth :}
+    </footer>
 </body>
 </html>
