@@ -1,124 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Smart IP Logger</title>
-    <style>
-        body {
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <title>Smart IP Logger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --deep-teal: #26A69A;
+      --soft-teal: #4DB6AC;
+      --light-teal: #B2DFDB;
+      --pale-aqua: #E0F2F1;
+      --hover-mint: #80CBC4;
+      --text-color: #2E3B4E;
+    }
 
-        .container {
-            margin: auto;
-            padding: 2rem;
-            max-width: 500px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-            animation: fadeIn 1s ease-in-out;
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        h2 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--pale-aqua);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
 
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background-color: var(--deep-teal);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        input[type="text"],
-        input[type="email"] {
-            padding: 0.8rem;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-        }
+    header span:first-child {
+      background-color: var(--soft-teal);
+      padding: 0.4rem 0.8rem;
+      border-radius: 5px;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
 
-        button {
-            padding: 0.8rem;
-            background-color: #ff6f61;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+    header span:last-child {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--pale-aqua);
+    }
 
-        button:hover {
-            background-color: #ff3b2e;
-        }
+    .container {
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: white;
+      border-radius: 10px;
+      max-width: 600px;
+      width: 90%;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
 
-        .short-url {
-            text-align: center;
-            margin-top: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-        }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
 
-        .short-url a {
-            color: #00ffd0;
-            text-decoration: none;
-        }
+    label {
+      font-weight: 600;
+    }
 
-        .short-url a:hover {
-            text-decoration: underline;
-        }
+    input[type="text"],
+    input[type="email"] {
+      padding: 0.8rem;
+      border: 1px solid var(--light-teal);
+      border-radius: 6px;
+      background-color: var(--pale-aqua);
+      font-size: 1rem;
+    }
 
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background-color: rgba(0, 0, 0, 0.15);
-            color: #ccc;
-            font-size: 0.9rem;
-            margin-top: auto;
-        }
+    input::placeholder {
+      color: #7baaa6;
+    }
 
-        @keyframes fadeIn {
-            0% {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            100% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-    </style>
+    button {
+      padding: 0.8rem;
+      background-color: var(--deep-teal);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: var(--hover-mint);
+      color: var(--text-color);
+    }
+
+    .short-url {
+      margin-top: 2rem;
+      padding: 1rem;
+      background-color: var(--light-teal);
+      border-radius: 8px;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .short-url h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .short-url a {
+      color: var(--text-color);
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .short-url a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: var(--soft-teal);
+      color: white;
+      font-size: 0.9rem;
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      header span {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Smart IP Logger</h2>
-        <form method="POST">
-            <label for="url">Target URL:</label>
-            <input type="text" name="url" id="url" placeholder="https://example.com" required>
 
-            <label for="to_email">Your Email (for alerts):</label>
-            <input type="email" name="to_email" id="to_email" placeholder="you@example.com" required>
+  <!-- 🧠 Tech Logo Style Header -->
+  <header>
+    <span>Smart</span>
+    <span>IP Logger</span>
+  </header>
 
-            <button type="submit">Generate Tracking Link</button>
-        </form>
+  <!-- 📩 Form Container -->
+  <div class="container">
+    <form method="POST">
+      <label for="url">Target URL:</label>
+      <input type="text" name="url" id="url" placeholder="https://example.com" required>
 
-        {% if short_url %}
-        <div class="short-url">
-            <h3>Your Tracking Link:</h3>
-            <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
-        </div>
-        {% endif %}
+      <label for="to_email">Your Email (for alerts):</label>
+      <input type="email" name="to_email" id="to_email" placeholder="you@example.com" required>
+
+      <button type="submit">Generate Link</button>
+    </form>
+
+    {% if short_url %}
+    <div class="short-url">
+      <h3>Your Tracking Link:</h3>
+      <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
     </div>
+    {% endif %}
+  </div>
 
-    <footer>
-        &copy; {{ 2025 }} Smart IP Logger &mdash; Built with ❤️ by Yaswanth :}
-    </footer>
+  <!-- ⚙️ Footer -->
+  <footer>
+    &copy; {{ 2025 }} Smart IP Logger — Built with :} by Yaswanth {:
+  </footer>
+
 </body>
 </html>
