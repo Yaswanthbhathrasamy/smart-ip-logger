@@ -8,18 +8,15 @@ DB_FILE = "url_db.json"
 EMAIL_ADDRESS = "yaswanthyaswsnth@gmail.com"
 EMAIL_PASSWORD = "izpgmmarafnznuoe"
 
-
 def load_db():
     if os.path.exists(DB_FILE):
         with open(DB_FILE, 'r') as f:
             return json.load(f)
     return {}
 
-
 def save_db(data):
     with open(DB_FILE, 'w') as f:
         json.dump(data, f)
-
 
 def get_geolocation(ip):
     try:
@@ -29,47 +26,44 @@ def get_geolocation(ip):
         print("[Geo Error]:", e)
         return {}
 
-
-def send_email_alert(ip_data, short_code, recipient_email):
+def send_email_alert(ip_data_list, short_code, to_email):
     msg = EmailMessage()
     msg['Subject'] = f"[Visitor] Tracked /track/{short_code}"
-    msg['From'] = EMAIL_ADDRESS
-    msg['To'] = recipient_email
+    msg['From'] = SENDER_EMAIL
+    msg['To'] = to_email
 
-    msg.set_content(f"""
-New Visitor Alert
+    content = f"New Visitor Alert\n\nShort Code: {short_code}\n\n"
 
-Short Code: {short_code}
-IP Address: {ip_data.get('query', 'N/A')}
-ISP: {ip_data.get('isp', 'N/A')}
-City: {ip_data.get('city', 'N/A')}
-Region: {ip_data.get('regionName', 'N/A')}
-Country: {ip_data.get('country', 'N/A')}
-Timezone: {ip_data.get('timezone', 'N/A')}
-Coordinates: {ip_data.get('lat', 'N/A')} / {ip_data.get('lon', 'N/A')}
-""")
+    for idx, data in enumerate(ip_data_list):
+        content += f"IP #{idx + 1}: {data.get('query', 'N/A')}\n"
+        content += f"  ISP: {data.get('isp', 'N/A')}\n"
+        content += f"  City: {data.get('city', 'N/A')}\n"
+        content += f"  Region: {data.get('regionName', 'N/A')}\n"
+        content += f"  Country: {data.get('country', 'N/A')}\n"
+        content += f"  Timezone: {data.get('timezone', 'N/A')}\n"
+        content += f"  Coordinates: {data.get('lat', 'N/A')} / {data.get('lon', 'N/A')}\n\n"
+
+    msg.set_content(content)
 
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            smtp.login(SENDER_EMAIL, SENDER_PASSWORD)
             smtp.send_message(msg)
             print("[✔] Email sent successfully.")
     except Exception as e:
         print("[✘] Email send failed:", e)
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         url = request.form.get("url")
-        recipient_email = request.form.get("recipient_email")
-
+        to_email = request.form.get("to_email")
         if not url.startswith("http"):
             url = "http://" + url
 
         short_code = uuid.uuid4().hex[:6]
         db = load_db()
-        db[short_code] = {"url": url, "email": recipient_email}
+        db[short_code] = {"url": url, "email": to_email}
         save_db(db)
 
         short_url = request.host_url + "track/" + short_code
@@ -77,24 +71,27 @@ def index():
 
     return render_template("index.html")
 
-
 @app.route('/track/<code>')
 def track(code):
     db = load_db()
     entry = db.get(code)
-
     if not entry:
         return "Invalid or expired link.", 404
 
     real_url = entry["url"]
-    recipient_email = entry["email"]
+    to_email = entry["email"]
 
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr)
-    geo_data = get_geolocation(ip)
-    send_email_alert(geo_data, code, recipient_email)
+    ip_header = request.headers.get("X-Forwarded-For", request.remote_addr)
+    ip_list = [ip.strip() for ip in ip_header.split(",")]
 
+    geo_data_list = []
+    for ip in ip_list:
+        geo = get_geolocation(ip)
+        geo['query'] = ip
+        geo_data_list.append(geo)
+
+    send_email_alert(geo_data_list, code, to_email)
     return redirect(real_url)
-
 
 if __name__ == "__main__":
     app.run(debug=True)
