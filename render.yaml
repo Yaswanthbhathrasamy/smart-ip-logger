@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: smart-ip-logger
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: EMAIL_ADDRESS
+        value: yaswanthyaswsnth@gmail.com
+      - key: EMAIL_PASSWORD
+        value: izpgmmarafnznuoe
+      - key: TO_EMAIL
+        value: yaswanthvisa@gmail.com
